@@ -58,13 +58,18 @@ export class AccountService {
     }
 
 
-    protected async getAccountWithPrivateData(accountId: number) {
-        const account: Account = await this.repository.findAccountById(accountId);
+
+
+    public async getAccountWithPrivateData(email: string) {
+        const account: Account = await this.repository.findAccountByEmail(email);
         if (!account) {
             throw new NotFoundException("account dont exist")
         }
         return account;
     }
+
+
+
 
 
     public async updateAccount(updateAccountDto: UpdateAccountDto, account_id: number): Promise<PublicAccount> {

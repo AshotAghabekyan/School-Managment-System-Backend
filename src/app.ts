@@ -7,13 +7,17 @@ import teacherRouter from "./modules/teacher/teacher.route.ts"
 import subjectRouter from "./modules/subject/subject.route.ts"
 import pupilRouter from "./modules/pupil/pupil.route.ts"
 import { errorHandler } from "./middleware/errorHandler.middleware.ts";
+import { AuthGuard } from "./modules/global/auth/auth.guard.ts";
 
 
 const app: Express = express();
+const guard = new AuthGuard();
 
 app.use(express.json());
 app.use(cors())
 app.use("/accounts", accountRouter);
+
+app.use(guard.checkJwt)
 app.use('/teachers', teacherRouter);
 app.use("/subjects", subjectRouter);
 app.use('/pupils', pupilRouter);

@@ -8,6 +8,7 @@ const router: Router = Router();
 export default router;
 
 
+
 router.get('/', (req: Request, res: Response, next: NextFunction) => 
     controller.findSubjects(req, res, next));
 

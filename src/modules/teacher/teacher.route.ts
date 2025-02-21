@@ -3,12 +3,10 @@ import { TeacherController, TeacherSubjectController } from "./teacher.controlle
 import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
 
-
 const controller: TeacherController = new TeacherController();
 const subController: TeacherSubjectController = new TeacherSubjectController();
 const router = Router();
 export default router;
-
 
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => 
