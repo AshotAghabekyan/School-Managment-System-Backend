@@ -1,0 +1,16 @@
+
+
+
+
+model Account {
+    accountId   Int    @id @default(autoincrement()) @map("account_id")
+    email     String @unique
+    firstname String
+    lastname  String
+    password  String
+    age       Int
+    createdAt DateTime @default(now())
+
+    Pupil   Pupil?  
+    Teacher Teacher? 
+}

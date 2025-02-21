@@ -1,0 +1,9 @@
+
+
+
+model Subject {
+    subjectId Int  @id @default(autoincrement()) @map("subject_id")
+    title String @unique
+    subjectTeachers TeacherOnSubject[] @relation(name: "TeacherToTeacherOnSubject")
+    subjectPupils PupilOnSubject[] @relation(name: "PupilOnSubject")
+}

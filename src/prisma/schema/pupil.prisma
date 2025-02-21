@@ -1,0 +1,9 @@
+
+
+
+model Pupil {
+    pupilId  Int  @id @default(autoincrement()) @map("pupil_id")
+    accountId Int @unique @map("account_id")
+    account Account @relation(fields: [accountId], references: [accountId])
+    pupilSubjects PupilOnSubject[] @relation(name: "PupilOnSubject")
+}

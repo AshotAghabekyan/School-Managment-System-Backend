@@ -1,0 +1,9 @@
+
+
+
+model Teacher {
+    teacherId Int  @id @default(autoincrement()) @map("teacher_id")
+    accountId Int @unique @map("account_id")
+    account    Account @relation(fields: [accountId], references: [accountId])
+    teacherSubjects TeacherOnSubject[] @relation(name: "TeacherToTeacherOnSubject")
+}

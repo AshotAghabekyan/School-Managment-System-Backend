@@ -1,0 +1,13 @@
+
+
+
+
+model PupilOnSubject {
+    id Int @id @default(autoincrement())
+    pupilId Int @map("pupil_id")
+    subjectId Int  @map("subject_id")
+    grade Float
+
+    pupil Pupil @relation(name: "PupilOnSubject", fields: [pupilId], references: [pupilId])
+    subject Subject @relation(name: "PupilOnSubject", fields: [subjectId], references: [subjectId])
+}
