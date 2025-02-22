@@ -1,12 +1,12 @@
 import { SubjectModel } from "../../../prisma/prisma.provider.ts";
-import type { SubjectDto, SubjectType } from "../interface/subject.interface.ts";
-import type { Subject } from "../interface/subject.interface.ts";
+import type { ICreateSubjectDto } from "../dto/subject.dto.ts";
+import type { Subject, SubjectType } from "../interface/subject.interface.ts";
 import { Prisma } from "@prisma/client";
 
 
 
 export interface ISubjectRepository {
-    createSubject(subjectDto: SubjectDto): Promise<Subject>;
+    createSubject(subjectDto: ICreateSubjectDto): Promise<Subject>;
     findSubjects(): Promise<Subject[]>
     deleteSubject(subjectTitle: SubjectType): Promise<Subject>;   
     bulkFindSubjectsByTitle(subjectsTitles: string[]): Promise<Subject[]> 
@@ -22,7 +22,7 @@ export class PrismaSubjectRepository implements ISubjectRepository {
         this.subjectModel = new SubjectModel().getModel();
     }
 
-    public async createSubject(subjectDto: SubjectDto): Promise<Subject> {
+    public async createSubject(subjectDto: ICreateSubjectDto): Promise<Subject> {
         const createdSubject: Subject = await this.subjectModel.create({
             data: {
                 title: subjectDto.title

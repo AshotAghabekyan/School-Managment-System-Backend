@@ -1,12 +1,13 @@
-import type { CreateAccountDto, UpdateAccountDto, Account } from "../interface/account.interface.ts"
+import type {  Account } from "../interface/account.interface.ts"
+import type { ICreateAccountDto, IUpdateAccountDto } from "../dto/account.dto.ts";
 import { Prisma } from "@prisma/client";
 import { AccountModel } from "../../../prisma/prisma.provider.ts";
 
 
 
 export interface IAccountRepository {
-    createAccount(accountDto: CreateAccountDto): Promise<Account>;
-    updateAccount(updateAccountDto: UpdateAccountDto, account_id: number): Promise<Account>;
+    createAccount(accountDto: ICreateAccountDto): Promise<Account>;
+    updateAccount(updateAccountDto: IUpdateAccountDto, account_id: number): Promise<Account>;
     deleteAccount(accountId: number): Promise<Account>
     findAccountByEmail(email: string): Promise<Account>
     findAccountById(accountId: number): Promise<Account>
@@ -21,7 +22,7 @@ export class PrismaAccountRepository implements IAccountRepository {
     }
 
 
-    public async createAccount(accountDto: CreateAccountDto): Promise<Account> {
+    public async createAccount(accountDto: ICreateAccountDto): Promise<Account> {
         const account = await this.accountModel.create({
             data: {...accountDto}
         })
@@ -34,7 +35,7 @@ export class PrismaAccountRepository implements IAccountRepository {
         return deletedAccount;
     }
 
-    public async updateAccount(updateAccountDto: UpdateAccountDto, accountId: number): Promise<Account> {
+    public async updateAccount(updateAccountDto: IUpdateAccountDto, accountId: number): Promise<Account> {
         const updatedAccount = await this.accountModel.update({
             where: {accountId: accountId},
             "data": updateAccountDto

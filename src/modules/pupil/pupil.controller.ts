@@ -1,6 +1,6 @@
 import type {NextFunction, Request, Response} from "express";
+import type { ICreatePupilDto } from "./dto/pupil.dto.ts";
 import { PupilService, PupilSubjectService } from "./pupil.service.ts";
-import type { createPupilDto, Pupil } from "./interface/pupil.interface.ts";
 import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import type { SubjectType } from "../subject/interface/subject.interface.ts";
 
@@ -14,7 +14,7 @@ export class PupilController {
     
     public async createPupil(req: Request, res: Response, next: NextFunction) {
         try {
-            const pupilDto: createPupilDto = req.body;
+            const pupilDto: ICreatePupilDto = req.body;
             const createdPupil = await this.pupilService.createPupil(pupilDto);
             res.status(201).json({pupil: createdPupil});
         }

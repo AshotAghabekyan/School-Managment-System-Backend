@@ -1,4 +1,3 @@
-// import {  } from "@prisma/client";
 import { PupilModel, PupilSubjectModel } from "../../../prisma/prisma.provider.ts";
 import {Prisma} from "@prisma/client";
 import type { Pupil, PupilOnSubject } from "../interface/pupil.interface.ts";

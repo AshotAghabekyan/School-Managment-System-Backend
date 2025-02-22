@@ -24,7 +24,3 @@ export interface PupilOnSubject {
     
 }
 
-
-export interface createPupilDto {
-    email: string;
-}

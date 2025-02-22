@@ -1,4 +1,4 @@
-import type { CreateAccountDto,Account, PublicAccount, UpdateAccountDto } from "./interface/account.interface.ts";
+import type { ICreateAccountDto,Account, PublicAccount, IUpdateAccountDto } from "./interface/account.interface.ts";
 import type { IAccountRepository } from "./repository/account.repository.ts";
 import { PrismaAccountRepository } from "./repository/account.repository.ts";
 import { CryptoHasher } from "../global/cryptoHasher/cryptoHasher.ts";
@@ -45,7 +45,7 @@ export class AccountService {
     }
 
 
-    public async createAccount(accountDto: CreateAccountDto): Promise<PublicAccount> {
+    public async createAccount(accountDto: ICreateAccountDto): Promise<PublicAccount> {
         const isAccountExist: Account = await this.repository.findAccountByEmail(accountDto.email);
         if (isAccountExist) {
             throw new BadRequestException('the account with that email already exist')
@@ -72,7 +72,7 @@ export class AccountService {
 
 
 
-    public async updateAccount(updateAccountDto: UpdateAccountDto, account_id: number): Promise<PublicAccount> {
+    public async updateAccount(updateAccountDto: IUpdateAccountDto, account_id: number): Promise<PublicAccount> {
         const updatedAccount: Account = await this.repository.updateAccount(updateAccountDto, account_id);
         if (!updatedAccount) {
             throw new BadRequestException("the user's profile has not been updated");

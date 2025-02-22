@@ -3,16 +3,6 @@ import type { PublicAccount } from "../../account/interface/account.interface";
 import type { SubjectType } from "../../subject/interface/subject.interface";
 
 
-export interface CreateTeacherDto {
-    accountId: number;
-    email: string;
-    subjects: SubjectType[];
-}
-
-
-export interface UpdateTeacherDto {
-    subjects: SubjectType[];
-}
 
 export interface Teacher {
     teacherId: number;

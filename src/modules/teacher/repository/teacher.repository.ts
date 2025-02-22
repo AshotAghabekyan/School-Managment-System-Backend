@@ -1,11 +1,12 @@
 import { Prisma } from "@prisma/client";
 import type { Subject } from "../../subject/interface/subject.interface.ts";
-import type {Teacher, TeacherOnSubject, CreateTeacherDto } from "../interface/teacher.interface.ts";
+import type {Teacher, TeacherOnSubject } from "../interface/teacher.interface.ts";
+import type { ICreateTeacherDto } from "../dto/teacher.dto.ts";
 import { TeacherModel, TeacherSubjectModel } from "../../../prisma/prisma.provider.ts";
 
 
 export interface ITeacherRepository {
-    createTeacher(teacherDto: CreateTeacherDto): Promise<Partial<Teacher>>;
+    createTeacher(teacherDto: ICreateTeacherDto): Promise<Partial<Teacher>>;
     findTeachers(): Promise<Teacher[]>;
     findTeacherById(teacherId: number): Promise<Teacher>;
     findTeacherByEmail(email: string): Promise<Teacher>;
@@ -32,7 +33,7 @@ export class PrismaTeacherRepository implements ITeacherRepository {
     }
 
 
-    public async createTeacher(teacherDto: CreateTeacherDto): Promise<Partial<Teacher>> {
+    public async createTeacher(teacherDto: ICreateTeacherDto): Promise<Partial<Teacher>> {
         const createdTeacher: Partial<Teacher> = await this.teacherModel.create({
             data: {
                 accountId: +teacherDto.accountId,

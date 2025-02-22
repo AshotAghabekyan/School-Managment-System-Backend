@@ -2,7 +2,8 @@ import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
 import { AccountService } from "../account/account.service.ts";
 import type { PublicAccount } from "../account/interface/account.interface.ts";
-import type { createPupilDto, Pupil, PupilOnSubject } from "./interface/pupil.interface.ts";
+import type { Pupil, PupilOnSubject } from "./interface/pupil.interface.ts";
+import type { ICreatePupilDto } from "./dto/pupil.dto.ts";
 import type { Subject, SubjectType } from "../subject/interface/subject.interface.ts";
 import { PrismaPupilRepository, PrismaPupilSubjectRepository, type IPupilRepository, type IPupilSubjectRepository } from "./repository/pupil.repository.ts";
 import { SubjectService } from "../subject/subject.service.ts";
@@ -16,7 +17,7 @@ export class PupilService {
     }
 
 
-    public async createPupil(createPupilDto: createPupilDto): Promise<Partial<Pupil>> {
+    public async createPupil(createPupilDto: ICreatePupilDto): Promise<Partial<Pupil>> {
         const accountService: AccountService = new AccountService();
         const pupilProfile: PublicAccount = await accountService.findAccountByEmail(createPupilDto.email);
         const isPupilExist = await this.pupilRepository.findPupilByAccountId(pupilProfile.accountId);

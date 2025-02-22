@@ -1,6 +1,7 @@
 import type { PublicAccount } from "../account/interface/account.interface.ts";
 import type { Subject } from "../subject/interface/subject.interface.ts";
-import type { CreateTeacherDto, Teacher, TeacherOnSubject } from "./interface/teacher.interface.ts";
+import type { Teacher, TeacherOnSubject } from "./interface/teacher.interface.ts";
+import type { ICreateTeacherDto } from "./dto/teacher.dto.ts";
 import type { ITeacherRepository, ITeacherSubjectRepository } from "./repository/teacher.repository.ts";
 import { PrismaTeacherRepository, PrismaTeacherSubjectRepository } from "./repository/teacher.repository.ts";
 import { AccountService } from "../account/account.service.ts";
@@ -21,7 +22,7 @@ export class TeacherService {
         this.accountService = new AccountService();
     }
 
-    public async createTeacher(teacherDto: CreateTeacherDto): Promise<Partial<Teacher> > {
+    public async createTeacher(teacherDto: ICreateTeacherDto): Promise<Partial<Teacher> > {
         const isAccountExist: PublicAccount = await this.accountService.findAccountById(teacherDto.accountId);
         if (!isAccountExist) {
             throw new NotFoundException("Associated account not found");

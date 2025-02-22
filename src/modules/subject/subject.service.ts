@@ -1,5 +1,5 @@
-import type { Subject } from "./interface/subject.interface.ts";
-import type { SubjectDto, SubjectType } from "./interface/subject.interface.ts";
+import type { Subject, SubjectType } from "./interface/subject.interface.ts";
+import type { ICreateSubjectDto } from "./dto/subject.dto.ts";
 import { type ISubjectRepository, PrismaSubjectRepository } from "./repository/subject.repository.ts";
 import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
@@ -14,7 +14,7 @@ export class SubjectService {
         this.repository = new PrismaSubjectRepository();
     }
 
-    public async createSubject(subjectDto: SubjectDto): Promise<Subject> {
+    public async createSubject(subjectDto: ICreateSubjectDto): Promise<Subject> {
         const createdSubject = await this.repository.createSubject(subjectDto);
         if (!createdSubject) {
             throw new BadRequestException("Failed to create subject");

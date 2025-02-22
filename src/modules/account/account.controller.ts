@@ -1,9 +1,13 @@
 import type { Request, Response, NextFunction } from "express";
 import type { JwtPayload } from "../global/auth/interface/auth.interface.ts";
-import type { CreateAccountDto, PublicAccount, UpdateAccountDto } from "./interface/account.interface.ts";
+import type { ICreateAccountDto, IUpdateAccountDto } from "./dto/account.dto.ts";
+import type { PublicAccount } from "./interface/account.interface.ts";
 import { AccountService } from "./account.service.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
 import { ForbiddenException } from "../../exception/forbidden.exception.ts";
+
+
+
 
 export class AccountController {
     private service: AccountService;
@@ -14,7 +18,7 @@ export class AccountController {
 
     public async createAccount(req: Request, res: Response, next: NextFunction) {
         try {
-            const accountDto: CreateAccountDto = req.body;
+            const accountDto: ICreateAccountDto = req.body;
             const createdAccount: PublicAccount = await this.service.createAccount(accountDto);
             res.status(201).json(createdAccount);
         } catch (error) {
@@ -38,7 +42,7 @@ export class AccountController {
 
     public async updateAccount(req: Request, res: Response, next: NextFunction) {
         try {
-            const profileFields: UpdateAccountDto = req.body;
+            const profileFields: IUpdateAccountDto = req.body;
             const reqUser: JwtPayload = req["user"];
 
             if (!profileFields) {
@@ -54,6 +58,8 @@ export class AccountController {
 
     public async findAccounts(req: Request, res: Response, next: NextFunction) {
         try {
+            const limit = req.query.limit;
+            const offset = req.query.offset;
             const allProfiles: PublicAccount[] = await this.service.findAccounts();
             res.status(200).json({ profiles: allProfiles });
         } catch (error) {

@@ -1,6 +1,7 @@
 import type { Subject } from "./interface/subject.interface.ts";
 import { SubjectService } from "./subject.service.ts";
-import type { SubjectDto, SubjectType } from "./interface/subject.interface.ts";
+import type { SubjectType } from "./interface/subject.interface.ts";
+import type { ICreateSubjectDto } from "./dto/subject.dto.ts";
 import type { NextFunction, Request, Response } from "express";
 
 
@@ -14,7 +15,7 @@ export class SubjectController {
 
     public async createSubject(req: Request, res: Response, next: NextFunction) {
         try {
-            const subjectDto: SubjectDto = req.body;
+            const subjectDto: ICreateSubjectDto = req.body;
             const createdSubject: Subject = await this.service.createSubject(subjectDto);
             res.status(201).json({subject: createdSubject});
         }

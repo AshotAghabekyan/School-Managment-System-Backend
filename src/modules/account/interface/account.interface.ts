@@ -23,20 +23,3 @@ export interface PublicAccount  {
 }
 
 
-export interface CreateAccountDto {
-    firstname: string;
-    lastname: string;
-    email: string;
-    age: number;
-    password: string
-}
-
-
-export interface UpdateAccountDto {
-    firstname?: string;
-    lastname?: string;
-    email?: string;
-    age?: number;
-}
-
-
