@@ -1,10 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
+import type { JwtPayload } from "../global/auth/interface/auth.interface.ts";
 import type { CreateAccountDto, PublicAccount, UpdateAccountDto } from "./interface/account.interface.ts";
 import { AccountService } from "./account.service.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
-import { InternalServerErrorException } from "../../exception/internal-server-error.exception.ts";
 import { ForbiddenException } from "../../exception/forbidden.exception.ts";
-import { UnauthorizedException } from "../../exception/unauthorized.exception.ts";
 
 export class AccountController {
     private service: AccountService;
@@ -40,13 +39,13 @@ export class AccountController {
     public async updateAccount(req: Request, res: Response, next: NextFunction) {
         try {
             const profileFields: UpdateAccountDto = req.body;
-            const reqUserId: number = req["user"].id;
+            const reqUser: JwtPayload = req["user"];
 
             if (!profileFields) {
                 throw new ForbiddenException("Body is empty or invalid");
             }
 
-            const updatedProfile: PublicAccount = await this.service.updateAccount(profileFields, reqUserId);
+            const updatedProfile: PublicAccount = await this.service.updateAccount(profileFields, reqUser.accountId);
             res.status(200).json({ profile: updatedProfile });
         } catch (error) {
             next(error);

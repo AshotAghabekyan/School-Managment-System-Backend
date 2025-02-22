@@ -1,33 +1,40 @@
-import { Request, Response, NextFunction } from 'express';
-import { AuthService } from './auth.service';
-import { UnauthorizedException } from '../../../exception/unauthorized.exception';
+import type { Request, Response, NextFunction } from 'express';
+import type { JwtPayload } from './interface/auth.interface.ts';
 
+import { AuthService } from './auth.service.ts';
+import { UnauthorizedException } from '../../../exception/unauthorized.exception.ts';
 
 
 export class AuthGuard {
-    private authService: AuthService
-    constructor() {
-        this.authService = new AuthService();
-    }
+    // private authService: AuthService
+    // constructor() {
+    //     this.authService = new AuthService();
+    // }
 
 
     public checkJwt(req: Request, res: Response, next: NextFunction) {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            throw new UnauthorizedException('Authorization header is missing')
+        try {
+            const authHeader = req.headers.authorization;
+            if (!authHeader) {
+                throw new UnauthorizedException('Authorization header is missing')
+            }
+    
+            const token: string = authHeader.split(' ')[1]; 
+            if (!token) {
+                throw new UnauthorizedException('Token is missing')
+            }
+            
+            const authService = new AuthService();
+            const payload: JwtPayload = authService.verifyToken(token);
+            if (!payload) {
+                throw new UnauthorizedException('Invalid token')
+            }
+    
+            req['user'] = payload;
+            next();
         }
-
-        const token = authHeader.split(' ')[1]; 
-        if (!token) {
-            throw new UnauthorizedException('Token is missing')
+        catch(error) {
+            next(error)
         }
-
-        const payload = this.authService.verifyToken(token);
-        if (!payload) {
-            throw new UnauthorizedException('Invalid token')
-        }
-
-        req['user'] = payload;
-        next();
     }
 }

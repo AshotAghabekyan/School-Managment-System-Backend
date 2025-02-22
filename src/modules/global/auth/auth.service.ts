@@ -1,41 +1,49 @@
-import * as jwt from 'jsonwebtoken';
-import { AccountService } from '../../account/account.service';
-import { PublicAccount } from '../../account/interface/account.interface';
-import { CryptoHasher } from '../cryptoHasher/cryptoHasher';
-import { UnauthorizedException } from '../../../exception/unauthorized.exception';
+import jwt from 'jsonwebtoken';
+import { AccountService } from '../../account/account.service.ts';
+import { CryptoHasher } from '../cryptoHasher/cryptoHasher.ts';
+import { UnauthorizedException } from '../../../exception/unauthorized.exception.ts';
+import { InternalServerErrorException } from '../../../exception/internal-server-error.exception.ts';
+
+import type { SignInDto, JwtPayload, JwtToken } from './interface/auth.interface.ts';
+import type { Account } from '../../account/interface/account.interface.ts';
+
+import configJwt from '../../../configuration/config.jwt.ts';
+
 
 
 export class AuthService {
-    private jwtSecret: string = process.env.JWT_SECRET || 'your-secret-key';
+    private jwtSecret: string = configJwt.jwtSecret
     private accountService: AccountService
   
     constructor() {
         this.accountService = new AccountService();
     }
 
-    public generateToken(payload: { accountId: number; email: string }): string {
-        return jwt.sign(payload, this.jwtSecret, {"expiresIn": "1d"});
+    public generateToken(payload: { accountId: number; email: string }): JwtToken {
+        const token: string = jwt.sign(payload, this.jwtSecret, {"expiresIn": "1d"});
+        return {token};
     }
 
 
-    public verifyToken(token: string): { accountId: number; email: string } | null {
+    public verifyToken(token: string): JwtPayload {
         try {
-            return jwt.verify(token, this.jwtSecret) as { accountId: number; email: string };
+            const payload: JwtPayload = jwt.verify(token, this.jwtSecret) as JwtPayload;
+            return payload
         } 
         catch (error) {
-            return null;
+            throw new InternalServerErrorException(error);
         }
     }
 
 
-    public async authenticate(email: string, password: string): Promise<string | null> {
-        const account = await this.accountService.getAccountWithPrivateData(email);
+    public async authenticate(dto: SignInDto): Promise<JwtToken> {
+        const account: Account = await this.accountService.getAccountWithPrivateData(dto.email);
         if (!account) {
             throw new UnauthorizedException('Invalid credentials');
         }
 
         const hasher = new CryptoHasher();
-        const isPasswordValid = hasher.verify(password, account.password);
+        const isPasswordValid = hasher.verify(dto.password, account.password);
         if (!isPasswordValid) {
             throw new UnauthorizedException('Invalid credentials')
         }

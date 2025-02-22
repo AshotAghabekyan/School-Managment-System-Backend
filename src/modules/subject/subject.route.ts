@@ -1,4 +1,4 @@
-import { errorHandler } from "../../middleware/errorHandler.middleware.ts";
+import { errorHandler } from "../../middleware/exception-handler.middleware.ts";
 import { SubjectController } from "./subject.controller.ts";
 import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";

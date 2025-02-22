@@ -9,8 +9,18 @@ model Account {
     lastname  String
     password  String
     age       Int
+    role ROLE @default(GUEST)
     createdAt DateTime @default(now())
 
     Pupil   Pupil?  
     Teacher Teacher? 
+}
+
+
+
+enum ROLE {
+    ADMIN
+    TEACHER
+    PUPIL
+    GUEST
 }

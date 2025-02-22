@@ -1,4 +1,4 @@
-import { errorHandler } from "../../middleware/errorHandler.middleware.ts";
+import { errorHandler } from "../../middleware/exception-handler.middleware.ts";
 import { TeacherController, TeacherSubjectController } from "./teacher.controller.ts";
 import type { NextFunction, Request, Response } from "express";
 import { Router } from "express";
@@ -7,6 +7,9 @@ const controller: TeacherController = new TeacherController();
 const subController: TeacherSubjectController = new TeacherSubjectController();
 const router = Router();
 export default router;
+
+
+
 
 
 router.get("/", (req: Request, res: Response, next: NextFunction) => 
