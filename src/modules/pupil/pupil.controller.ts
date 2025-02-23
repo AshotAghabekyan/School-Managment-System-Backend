@@ -16,7 +16,7 @@ export class PupilController {
         try {
             const pupilDto: ICreatePupilDto = req.body;
             const createdPupil = await this.pupilService.createPupil(pupilDto);
-            res.status(201).json({pupil: createdPupil});
+            res.status(201).json({data: {pupil: createdPupil}});
         }
         catch(error) {
             next(error);
@@ -31,7 +31,7 @@ export class PupilController {
                 throw new BadRequestException("the `pupilId` param required");
             }
             const deletedPupil = await this.pupilService.deletePupil(targetPupilId);
-            res.status(200).json({deletedPupil});
+            res.status(200).json({data: {deletedPupil}});
         }
         catch(error) {
             next(error)
@@ -42,7 +42,7 @@ export class PupilController {
     public async getPupils(req: Request, res: Response, next: NextFunction) {
         try {
             const allPupils = await this.pupilService.findPupils();
-            res.status(200).json({pupils: allPupils});
+            res.status(200).json({data: {pupils: allPupils}});
         }
         catch(error) {
             next(error);
@@ -58,7 +58,7 @@ export class PupilController {
             }
             
             const targetPupil = await this.pupilService.findPupilById(targetPupilId);
-            res.status(200).json({pupil: targetPupil});
+            res.status(200).json({data: {pupil: targetPupil}});
         }
         catch(error) {
             next(error);

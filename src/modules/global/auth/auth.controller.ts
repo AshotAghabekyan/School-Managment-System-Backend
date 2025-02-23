@@ -13,7 +13,7 @@ export class AuthController {
         try {
             const signInDto: SignInDto = req.body;
             const token: JwtToken = await this.authService.authenticate(signInDto);
-            res.status(200).json({token});
+            res.status(200).json({data: {token}});
         }
         catch(error) {
             next(error)

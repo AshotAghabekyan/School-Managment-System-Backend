@@ -17,7 +17,8 @@ const authenticationGuard = new AuthGuard();
 const authorizationGuard = new RoleGuard();
 
 app.use(express.json());
-app.use(cors())
+app.use(cors());
+
 app.get("/", (req: Request, res: Response) => {
     res.status(200);
     res.write('response from server');

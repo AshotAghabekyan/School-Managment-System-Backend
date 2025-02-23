@@ -19,8 +19,9 @@ export class AccountController {
     public async createAccount(req: Request, res: Response, next: NextFunction) {
         try {
             const accountDto: ICreateAccountDto = req.body;
+            accountDto.age = +accountDto.age
             const createdAccount: PublicAccount = await this.service.createAccount(accountDto);
-            res.status(201).json(createdAccount);
+            res.status(201).json({data: {account: createdAccount}});
         } catch (error) {
             next(error);
         }
@@ -34,7 +35,7 @@ export class AccountController {
             }
 
             const deletedUserProfile: PublicAccount = await this.service.deleteAccount(accountId);
-            res.status(200).json({ deletedUser: deletedUserProfile });
+            res.status(200).json({data: { deletedAccount: deletedUserProfile}});
         } catch (error) {
             next(error);
         }
@@ -50,7 +51,7 @@ export class AccountController {
             }
 
             const updatedProfile: PublicAccount = await this.service.updateAccount(profileFields, reqUser.accountId);
-            res.status(200).json({ profile: updatedProfile });
+            res.status(200).json({data: { profile: updatedProfile }});
         } catch (error) {
             next(error);
         }
@@ -61,7 +62,7 @@ export class AccountController {
             const limit = req.query.limit;
             const offset = req.query.offset;
             const allProfiles: PublicAccount[] = await this.service.findAccounts();
-            res.status(200).json({ profiles: allProfiles });
+            res.status(200).json({data: { profiles: allProfiles }});
         } catch (error) {
             next(error);
         }
@@ -75,7 +76,7 @@ export class AccountController {
             }
 
             const targetProfile: PublicAccount = await this.service.findAccountById(accountId);
-            res.status(200).json({ profile: targetProfile });
+            res.status(200).json({data: { profile: targetProfile }});
         } catch (error) {
             next(error);
         }

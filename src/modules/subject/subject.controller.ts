@@ -17,7 +17,7 @@ export class SubjectController {
         try {
             const subjectDto: ICreateSubjectDto = req.body;
             const createdSubject: Subject = await this.service.createSubject(subjectDto);
-            res.status(201).json({subject: createdSubject});
+            res.status(201).json({data: {subject: createdSubject}});
         }
         catch(error) {
             next(error)
@@ -29,7 +29,7 @@ export class SubjectController {
         try {
             const subjectTitle: SubjectType = req.params.subject;
             const deletedSubject: Subject = await this.service.deleteSubject(subjectTitle)
-            res.status(200).json({deletedSubject})
+            res.status(200).json({data: {deletedSubject}})
         }
         catch(error) {
             next(error);
@@ -40,7 +40,7 @@ export class SubjectController {
     public async findSubjects(req: Request, res: Response, next: NextFunction) {
         try {
             const allSubjects: Subject[] = await this.service.findSubjects();
-            res.status(200).json({subjects: allSubjects});
+            res.status(200).json({data: {subjects: allSubjects}});
         }
         catch(error) {
             next(error) 

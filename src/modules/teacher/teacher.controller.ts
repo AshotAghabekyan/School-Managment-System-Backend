@@ -16,7 +16,7 @@ export class TeacherController {
         try {
             const teacherDto: ICreateTeacherDto = req.body;
             const teacher = await this.service.createTeacher(teacherDto);
-            res.status(201).json(teacher);
+            res.status(201).json({data: {teacher}});
         } catch (error) {
             next(error)
         }
@@ -26,7 +26,7 @@ export class TeacherController {
     public async findTeachers(req: Request, res: Response, next: NextFunction) {
         try {
             const teachers = await this.service.findTeachers();
-            res.status(200).json({teachers: teachers});
+            res.status(200).json({data: {teachers}});
         } catch (error) {
             next(error)
         }
@@ -37,7 +37,7 @@ export class TeacherController {
         try {
             const { teacherId } = req.params;
             const teacher = await this.service.findTeacherById(Number(teacherId));
-            res.status(200).json(teacher);
+            res.status(200).json({data: {teacher}});
         } catch (error) {
             next(error);
         }
@@ -48,7 +48,7 @@ export class TeacherController {
         try {
             const { teacherId } = req.params;
             const deletedTeacher = await this.service.deleteTeacher(Number(teacherId));
-            res.status(200).json({ deletedTeacher });
+            res.status(200).json({ data: {deletedTeacher} });
         } catch (error) {
             next(error)
         }
@@ -70,7 +70,7 @@ export class TeacherSubjectController {
         try {
             const { teacherId } = req.params;
             const subjects = await this.service.getTeacherSubjectsList(Number(teacherId));
-            res.status(200).json({ subjects });
+            res.status(200).json({data: { subjects }});
         } catch (error) {
             next(error)
         }
@@ -82,7 +82,7 @@ export class TeacherSubjectController {
             const { teacherId } = req.params;
             const subjects: string[] = req.body.subjects
             const result = await this.service.assignSubjectToTeacher(Number(teacherId), subjects);
-            res.status(201).json(result);
+            res.status(201).json({data: {subjects: result}});
         } catch (error) {
             next(error)
         }
@@ -93,7 +93,7 @@ export class TeacherSubjectController {
             const { teacherId } = req.params;
             const subjects: string[] = req.body.subjects;
             const result = await this.service.removeSubjectFromTeacher(Number(teacherId), subjects);
-            res.status(200).json({ message: "Subject removed", result });
+            res.status(200).json({data: { message: "Subject removed", result }});
         } catch (error) {
             next(error)
         }
