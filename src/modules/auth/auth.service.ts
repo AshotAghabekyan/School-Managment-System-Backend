@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken';
-import { AccountService } from '../../account/account.service.ts';
-import { CryptoHasher } from '../cryptoHasher/cryptoHasher.ts';
-import { UnauthorizedException } from '../../../exception/unauthorized.exception.ts';
-import { InternalServerErrorException } from '../../../exception/internal-server-error.exception.ts';
+import { AccountService } from '../account/account.service.ts';
+import { CryptoHasher } from '../global/cryptoHasher/cryptoHasher.ts';
+import { UnauthorizedException } from '../../exception/unauthorized.exception.ts';
+import { InternalServerErrorException } from '../../exception/internal-server-error.exception.ts';
 
 import type { SignInDto, JwtPayload, JwtToken } from './interface/auth.interface.ts';
-import type { Account } from '../../account/interface/account.interface.ts';
+import type { Account } from '../account/interface/account.interface.ts';
 
-import configJwt from '../../../configuration/config.jwt.ts';
+import configJwt from '../../configuration/config.jwt.ts';
 
 
 

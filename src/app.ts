@@ -2,13 +2,13 @@ import type {Express, Request, Response} from "express";
 import express from "express";
 import cors from "cors";
 import httpConfig from "./configuration/config.http.ts"
-import authRouter from "./modules/global/auth/auth.route.ts"
+import authRouter from "./modules/auth/auth.route.ts"
 import accountRouter from "./modules/account/account.route.ts"
 import teacherRouter from "./modules/teacher/teacher.route.ts"
 import subjectRouter from "./modules/subject/subject.route.ts"
 import pupilRouter from "./modules/pupil/pupil.route.ts"
 import { errorHandler } from "./middleware/exception-handler.middleware.ts";
-import { AuthGuard } from "./modules/global/auth/auth.guard.ts";
+import { AuthGuard } from "./modules/auth/auth.guard.ts";
 import { RoleGuard } from "./middleware/role.auth-guard.ts";
 
 

@@ -1,6 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import { TeacherService, TeacherSubjectService } from "./teacher.service.ts";
 import type { ICreateTeacherDto } from "./dto/teacher.dto.ts";
+import { ApiResponse } from "../global/types/api/api.types.ts";
+import { Teacher } from "./interface/teacher.interface.ts";
+import { Subject } from "../subject/interface/subject.interface.ts";
 
 
 
@@ -16,7 +19,8 @@ export class TeacherController {
         try {
             const teacherDto: ICreateTeacherDto = req.body;
             const teacher = await this.service.createTeacher(teacherDto);
-            res.status(201).json({data: {teacher}});
+            const apiResponse = new ApiResponse<Partial<Teacher>>(teacher, 201, true, 'The teacher has been created');
+            res.status(201).json(apiResponse);
         } catch (error) {
             next(error)
         }
@@ -26,7 +30,8 @@ export class TeacherController {
     public async findTeachers(req: Request, res: Response, next: NextFunction) {
         try {
             const teachers = await this.service.findTeachers();
-            res.status(200).json({data: {teachers}});
+            const apiResponse = new ApiResponse<Teacher[]>(teachers, 200, true);
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error)
         }
@@ -37,7 +42,8 @@ export class TeacherController {
         try {
             const { teacherId } = req.params;
             const teacher = await this.service.findTeacherById(Number(teacherId));
-            res.status(200).json({data: {teacher}});
+            const apiResponse = new ApiResponse<Teacher>(teacher, 200, true);
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error);
         }
@@ -48,7 +54,8 @@ export class TeacherController {
         try {
             const { teacherId } = req.params;
             const deletedTeacher = await this.service.deleteTeacher(Number(teacherId));
-            res.status(200).json({ data: {deletedTeacher} });
+            const apiResponse = new ApiResponse<Partial<Teacher>>(deletedTeacher, 200, true, "The teacher has been deleted");
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error)
         }
@@ -70,7 +77,8 @@ export class TeacherSubjectController {
         try {
             const { teacherId } = req.params;
             const subjects = await this.service.getTeacherSubjectsList(Number(teacherId));
-            res.status(200).json({data: { subjects }});
+            const apiResponse = new ApiResponse<Subject>(subjects, 200, true);
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error)
         }
@@ -81,8 +89,9 @@ export class TeacherSubjectController {
         try {
             const { teacherId } = req.params;
             const subjects: string[] = req.body.subjects
-            const result = await this.service.assignSubjectToTeacher(Number(teacherId), subjects);
-            res.status(201).json({data: {subjects: result}});
+            const assignmentResult = await this.service.assignSubjectToTeacher(Number(teacherId), subjects);
+            const apiResponse = new ApiResponse(assignmentResult, 201, true, 'The subjects has been assigned to the teacher')
+            res.status(201).json(apiResponse);
         } catch (error) {
             next(error)
         }
@@ -92,8 +101,9 @@ export class TeacherSubjectController {
         try {
             const { teacherId } = req.params;
             const subjects: string[] = req.body.subjects;
-            const result = await this.service.removeSubjectFromTeacher(Number(teacherId), subjects);
-            res.status(200).json({data: { message: "Subject removed", result }});
+            const reassignmentResult = await this.service.removeSubjectFromTeacher(Number(teacherId), subjects);
+            const apiResponse = new ApiResponse(reassignmentResult, 200, true);
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error)
         }

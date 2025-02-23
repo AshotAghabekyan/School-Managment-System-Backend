@@ -1,10 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
-import type { JwtPayload } from "../global/auth/interface/auth.interface.ts";
+import type { JwtPayload } from "../auth/interface/auth.interface.ts";
 import type { ICreateAccountDto, IUpdateAccountDto } from "./dto/account.dto.ts";
 import type { PublicAccount } from "./interface/account.interface.ts";
 import { AccountService } from "./account.service.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
 import { ForbiddenException } from "../../exception/forbidden.exception.ts";
+import { ApiResponse } from "../global/types/api/api.types.ts";
 
 
 
@@ -21,7 +22,13 @@ export class AccountController {
             const accountDto: ICreateAccountDto = req.body;
             accountDto.age = +accountDto.age
             const createdAccount: PublicAccount = await this.service.createAccount(accountDto);
-            res.status(201).json({data: {account: createdAccount}});
+            const apiResponse: ApiResponse<PublicAccount> = new ApiResponse<PublicAccount>(
+                createdAccount,
+                201,
+                true,
+                'The Account has been created'
+            )
+            res.status(201).json(apiResponse);
         } catch (error) {
             next(error);
         }
@@ -35,7 +42,13 @@ export class AccountController {
             }
 
             const deletedUserProfile: PublicAccount = await this.service.deleteAccount(accountId);
-            res.status(200).json({data: { deletedAccount: deletedUserProfile}});
+            const apiResponse: ApiResponse<PublicAccount> = new ApiResponse<PublicAccount>(
+                deletedUserProfile,
+                200,
+                true,
+                'The Account has been deleted'
+            )
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error);
         }
@@ -51,7 +64,13 @@ export class AccountController {
             }
 
             const updatedProfile: PublicAccount = await this.service.updateAccount(profileFields, reqUser.accountId);
-            res.status(200).json({data: { profile: updatedProfile }});
+            const apiResponse: ApiResponse<PublicAccount> = new ApiResponse<PublicAccount>(
+                updatedProfile,
+                200,
+                true,
+                'The Account has been updated'
+            )
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error);
         }
@@ -59,10 +78,13 @@ export class AccountController {
 
     public async findAccounts(req: Request, res: Response, next: NextFunction) {
         try {
-            const limit = req.query.limit;
-            const offset = req.query.offset;
             const allProfiles: PublicAccount[] = await this.service.findAccounts();
-            res.status(200).json({data: { profiles: allProfiles }});
+            const apiResponse: ApiResponse<PublicAccount[]> = new ApiResponse<PublicAccount[]>(
+                allProfiles,
+                200,
+                true,
+            )
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error);
         }
@@ -76,7 +98,12 @@ export class AccountController {
             }
 
             const targetProfile: PublicAccount = await this.service.findAccountById(accountId);
-            res.status(200).json({data: { profile: targetProfile }});
+            const apiResponse: ApiResponse<PublicAccount> = new ApiResponse<PublicAccount>(
+                targetProfile,
+                200,
+                true,
+            )
+            res.status(200).json(apiResponse);
         } catch (error) {
             next(error);
         }

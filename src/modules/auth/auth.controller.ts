@@ -1,6 +1,7 @@
 import type {Request, Response, NextFunction} from "express";
 import type { JwtToken, SignInDto } from "./interface/auth.interface.ts";
 import { AuthService } from "./auth.service.ts";
+import { ApiResponse } from "../global/types/api/api.types.ts";
 
 
 export class AuthController {
@@ -13,7 +14,8 @@ export class AuthController {
         try {
             const signInDto: SignInDto = req.body;
             const token: JwtToken = await this.authService.authenticate(signInDto);
-            res.status(200).json({data: {token}});
+            const apiResponse: ApiResponse<JwtToken> = new ApiResponse(token, 201, true);
+            res.status(200).json(apiResponse);
         }
         catch(error) {
             next(error)

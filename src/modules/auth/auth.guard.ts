@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import type { JwtPayload } from './interface/auth.interface.ts';
 
 import { AuthService } from './auth.service.ts';
-import { UnauthorizedException } from '../../../exception/unauthorized.exception.ts';
+import { UnauthorizedException } from '../../exception/unauthorized.exception.ts';
 
 
 export class AuthGuard {

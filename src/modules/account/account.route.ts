@@ -2,7 +2,7 @@ import { Router } from "express";
 import { AccountController } from "./account.controller.ts";
 import { errorHandler } from "../../middleware/exception-handler.middleware.ts";
 import type { NextFunction, Request, Response } from "express";
-import { AuthGuard } from "../global/auth/auth.guard.ts";
+import { AuthGuard } from "../auth/auth.guard.ts";
 import { DtoValidator } from "../../middleware/dto-validator.middleware.ts";
 
 
