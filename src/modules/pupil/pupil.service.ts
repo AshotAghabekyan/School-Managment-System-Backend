@@ -17,7 +17,7 @@ export class PupilService {
     }
 
 
-    public async createPupil(createPupilDto: ICreatePupilDto): Promise<Partial<Pupil>> {
+    public async createPupil(createPupilDto: ICreatePupilDto): Promise<Pupil> {
         const accountService: AccountService = new AccountService();
         const pupilProfile: PublicAccount = await accountService.findAccountByEmail(createPupilDto.email);
         const isPupilExist = await this.pupilRepository.findPupilByAccountId(pupilProfile.accountId);
@@ -25,7 +25,7 @@ export class PupilService {
         if (isPupilExist) {
             throw new BadRequestException("The pupil with this email already exist")
         }
-        const createdPupil: Partial<Pupil> = await this.pupilRepository.createPupil(pupilProfile.accountId);
+        const createdPupil: Pupil = await this.pupilRepository.createPupil(pupilProfile.accountId);
         if (!createdPupil) {
             throw new BadRequestException("The pupil has not been created")
         }
@@ -46,7 +46,7 @@ export class PupilService {
     };
 
 
-    public async findPupils(): Promise<Partial<Pupil>[]> {
+    public async findPupils(): Promise<Pupil[]> {
         const pupils = await this.pupilRepository.findPupils();
         if (!pupils.length) {
             throw new NotFoundException("No pupils found")
@@ -54,16 +54,16 @@ export class PupilService {
         return pupils;
     };
 
-    public async findPupilById(pupilId: number): Promise<Partial<Pupil>> {
-        const targetPupil: Partial<Pupil> = await this.pupilRepository.findPupilById(pupilId);
+    public async findPupilById(pupilId: number): Promise<Pupil> {
+        const targetPupil: Pupil = await this.pupilRepository.findPupilById(pupilId);
         if (!targetPupil) {
             throw new NotFoundException('No pupil found')
         }
         return targetPupil;
     }
 
-    public async findPupilByAccountId(accountId: number): Promise<Partial<Pupil>> {
-        const targetPupil: Partial<Pupil> = await this.pupilRepository.findPupilByAccountId(accountId);
+    public async findPupilByAccountId(accountId: number): Promise<Pupil> {
+        const targetPupil: Pupil = await this.pupilRepository.findPupilByAccountId(accountId);
         if (!targetPupil) {
             throw new NotFoundException("pupil with given accountId has not exist");
         }
@@ -71,8 +71,8 @@ export class PupilService {
     }
 
 
-    public async isPupilExist(pupilId: number): Promise<Partial<Pupil>> {
-        const pupil: Partial<Pupil> = await this.findPupilById(pupilId);
+    public async isPupilExist(pupilId: number): Promise<Pupil> {
+        const pupil: Pupil = await this.findPupilById(pupilId);
         return pupil || null;
     }
 };

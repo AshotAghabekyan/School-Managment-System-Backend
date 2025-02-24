@@ -6,11 +6,11 @@ import type { Subject } from "../../subject/interface/subject.interface.ts";
 
 
 export interface IPupilRepository {
-    findPupils(): Promise<Partial<Pupil>[]>;
-    findPupilById(pupilId: number): Promise<Partial<Pupil>>;
-    createPupil(pupilAccountId: number): Promise<Partial<Pupil>>;
+    findPupils(): Promise<Pupil[]>;
+    findPupilById(pupilId: number): Promise<Pupil>;
+    createPupil(pupilAccountId: number): Promise<Pupil>;
     deletePupil(pupilId: number): Promise<Partial<Pupil>>;
-    findPupilByAccountId(accountId: number): Promise<Partial<Pupil>>;
+    findPupilByAccountId(accountId: number): Promise<Pupil>;
 }
 
 
@@ -32,8 +32,8 @@ export class PrismaPupilRepository implements IPupilRepository {
         this.pupilModel = new PupilModel().getModel();
     }
 
-    public async findPupils(): Promise<Partial<Pupil>[]> {
-        const pupils: Partial<Pupil>[] = await this.pupilModel.findMany({
+    public async findPupils(): Promise<Pupil[]> {
+        const pupils: Pupil[] = await this.pupilModel.findMany({
             include: {
                 account: {
                     select: {
@@ -42,24 +42,25 @@ export class PrismaPupilRepository implements IPupilRepository {
                         lastname: true,
                         email: true,
                     }
-                }
+                },
+                pupilSubjects: {select: {subject: true}}
             }
         });
         return pupils;
     }
 
-    public async findPupilById(pupilId: number): Promise<Partial<Pupil>> {
+    public async findPupilById(pupilId: number): Promise<Pupil> {
         const pupil = await this.findPupilByField('pupilId', pupilId);
         return pupil;
     }
 
-    public async findPupilByAccountId(accountId: number): Promise<Partial<Pupil>> {
+    public async findPupilByAccountId(accountId: number): Promise<Pupil> {
         const pupil = await this.findPupilByField('accountId', accountId);
         return pupil;
     }
 
-    public async createPupil(pupilAccountId: number): Promise<Partial<Pupil>> {
-        const createdPupil: Partial<Pupil> = await this.pupilModel.create({
+    public async createPupil(pupilAccountId: number): Promise<Pupil> {
+        const createdPupil: Pupil = await this.pupilModel.create({
             data: {
                 accountId: pupilAccountId,
             },
@@ -71,7 +72,8 @@ export class PrismaPupilRepository implements IPupilRepository {
                         lastname: true,
                         email: true,
                     }
-                }
+                },
+                pupilSubjects: {select: {subject: true}}
             }
         });
         return createdPupil;
@@ -88,8 +90,8 @@ export class PrismaPupilRepository implements IPupilRepository {
     }
 
 
-    private async findPupilByField(field: string, value: number | string): Promise<Partial<Pupil>> {
-        const pupil: Partial<Pupil> = await this.pupilModel.findFirst({
+    private async findPupilByField(field: string, value: number | string): Promise<Pupil> {
+        const pupil: Pupil = await this.pupilModel.findFirst({
             where: {
                 [field]: value,
             },
