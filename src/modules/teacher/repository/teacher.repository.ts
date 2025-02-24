@@ -9,6 +9,7 @@ export interface ITeacherRepository {
     createTeacher(teacherDto: ICreateTeacherDto): Promise<Partial<Teacher>>;
     findTeachers(): Promise<Teacher[]>;
     findTeacherById(teacherId: number): Promise<Teacher>;
+    findTeacherByAccountId(accountId: number): Promise<Teacher>
     findTeacherByEmail(email: string): Promise<Teacher>;
     deleteTeacher(teacherId: number): Promise<Partial<Teacher>>;
 }
@@ -16,8 +17,8 @@ export interface ITeacherRepository {
 
 
 export interface ITeacherSubjectRepository {
-    assignSubjectToTeacher(teacherId: number, subjectsTitle: Subject[]): Promise<Partial<TeacherOnSubject>[]>
-    removeSubjectFromTeacher(teacherId: number, subjectsTitle: string[]): Promise<TeacherOnSubject | Partial<TeacherOnSubject>> 
+    assignSubjectToTeacher(teacherId: number, subjectsTitle: Subject[]): Promise<Subject[]>
+    removeSubjectFromTeacher(teacherId: number, subjectsTitle: string[]): Promise<Subject[]> 
     findSubjectsByTeacherId(teacherId: number): Promise<Subject[]>;
 }
 
@@ -87,6 +88,29 @@ export class PrismaTeacherRepository implements ITeacherRepository {
     }
 
 
+    public async findTeacherByAccountId(accountId: number): Promise<Teacher> {
+        const targetTeacher: Teacher = await this.teacherModel.findFirst({
+            where: {
+                account: {
+                    accountId
+                }
+            },
+            include: {
+                teacherSubjects: {
+                    select: {
+                        subject: true
+                    }
+                },
+                account: {
+                    omit: {password: true, createdAt: true}
+                }   
+            }
+        })
+
+        return targetTeacher; 
+    }
+
+
     public async findTeacherByEmail(email: string): Promise<Teacher> {
         const targetTeacher: Teacher = await this.teacherModel.findFirst({
             where: {
@@ -141,22 +165,26 @@ export class PrismaTeacherSubjectRepository implements ITeacherSubjectRepository
                 subject: true,
             },
         })
-        return teacherOnSubjects
+        return teacherOnSubjects.map((t_on_sub: TeacherOnSubject) => {
+            return t_on_sub.subject;
+        })
     }
 
 
-    public async removeSubjectFromTeacher(teacherId: number, subjectsTitle: string[]): Promise<TeacherOnSubject | Partial<TeacherOnSubject>> {
+    public async removeSubjectFromTeacher(teacherId: number, subjectsTitle: string[]): Promise<Subject[]> {
         await this.teacherSubjectModel.deleteMany({
             where: {
                 subject: {title: {in: subjectsTitle}}
             }
         })
 
-        const teacher: Partial<TeacherOnSubject> = await this.teacherSubjectModel.findFirst({
+        const teacherOnSubjects = await this.teacherSubjectModel.findMany({
             where: {teacher: {teacherId}},
-            select: {teacher: true},
+            select: {subject: true},
         })
-        return teacher
+        return teacherOnSubjects.map((t_on_sub: TeacherOnSubject) => {
+            return t_on_sub.subject;
+        })
     }
 
 

@@ -1,4 +1,5 @@
-import type { ICreateAccountDto,Account, PublicAccount, IUpdateAccountDto } from "./interface/account.interface.ts";
+import type { Account, PublicAccount } from "./interface/account.interface.ts";
+import type { ICreateAccountDto, IUpdateAccountDto } from "./dto/account.dto.ts";
 import type { IAccountRepository } from "./repository/account.repository.ts";
 import { PrismaAccountRepository } from "./repository/account.repository.ts";
 import { CryptoHasher } from "../global/cryptoHasher/cryptoHasher.ts";

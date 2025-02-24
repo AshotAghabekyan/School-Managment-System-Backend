@@ -8,11 +8,15 @@ const controller: PupilController = new PupilController();
 const subController: PupilSubjectController = new PupilSubjectController();
 export default router
 
+
 router.get("/", (req: Request, res: Response, next: NextFunction) => 
     controller.getPupils(req, res, next))
 
 router.get("/:pupilId", (req: Request, res: Response, next: NextFunction) => 
     controller.getPupilById(req, res, next))
+
+router.get("/pubAccount/:accountId", (req: Request, res: Response, next: NextFunction) => 
+    controller.getPupilByAccountId(req, res, next))
 
 router.post('/', (req: Request, res: Response, next: NextFunction) => 
     controller.createPupil(req, res, next))

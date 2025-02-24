@@ -2,7 +2,7 @@ import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
 import { AccountService } from "../account/account.service.ts";
 import type { PublicAccount } from "../account/interface/account.interface.ts";
-import type { Pupil, PupilOnSubject } from "./interface/pupil.interface.ts";
+import type { Pupil, PupilOnSubject, SubjectGrade } from "./interface/pupil.interface.ts";
 import type { ICreatePupilDto } from "./dto/pupil.dto.ts";
 import type { Subject, SubjectType } from "../subject/interface/subject.interface.ts";
 import { PrismaPupilRepository, PrismaPupilSubjectRepository, type IPupilRepository, type IPupilSubjectRepository } from "./repository/pupil.repository.ts";
@@ -62,6 +62,14 @@ export class PupilService {
         return targetPupil;
     }
 
+    public async findPupilByAccountId(accountId: number): Promise<Partial<Pupil>> {
+        const targetPupil: Partial<Pupil> = await this.pupilRepository.findPupilByAccountId(accountId);
+        if (!targetPupil) {
+            throw new NotFoundException("pupil with given accountId has not exist");
+        }
+        return targetPupil;
+    }
+
 
     public async isPupilExist(pupilId: number): Promise<Partial<Pupil>> {
         const pupil: Partial<Pupil> = await this.findPupilById(pupilId);
@@ -96,7 +104,7 @@ export class PupilSubjectService {
     }
 
 
-    public async updateSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<Partial<PupilOnSubject>> {
+    public async updateSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<SubjectGrade> {
         if (!pupilId || !subjectId || grade === undefined) {
             throw new BadRequestException("Pupil ID, Subject ID, and grade are required");
         }
@@ -110,7 +118,7 @@ export class PupilSubjectService {
     }
     
 
-    public async getPupilSubjects(pupilId: number): Promise<Partial<PupilOnSubject>[]> {
+    public async getPupilSubjects(pupilId: number): Promise<SubjectGrade[]> {
         if (!pupilId) {
             throw new BadRequestException("Pupil ID is required");
         }
@@ -119,7 +127,8 @@ export class PupilSubjectService {
         return pupilSubjects;
     }
 
-    public async removeSubjectFromPupil(pupilId: number, subjectId: number) {
+
+    public async removeSubjectFromPupil(pupilId: number, subjectId: number): Promise<Subject[]> {
         if (!pupilId || !subjectId) {
             throw new BadRequestException("Pupil ID and Subject ID are required");
         }

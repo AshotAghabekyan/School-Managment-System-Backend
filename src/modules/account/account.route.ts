@@ -29,6 +29,10 @@ router.get("/:accountId", (req: Request, res: Response, next: NextFunction) =>
     controller.findAccountById(req, res, next));
 
 
+router.get("/account/currentAccount", (req: Request, res: Response, next: NextFunction) =>
+     controller.getAccountByToken(req, res, next))
+
+
 router.put("/:accountId", (req: Request, res: Response, next: NextFunction) =>
      controller.updateAccount(req, res, next));
 

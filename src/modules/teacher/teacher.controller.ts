@@ -4,6 +4,7 @@ import type { ICreateTeacherDto } from "./dto/teacher.dto.ts";
 import { ApiResponse } from "../global/types/api/api.types.ts";
 import type { Teacher } from "./interface/teacher.interface.ts";
 import type { Subject } from "../subject/interface/subject.interface.ts";
+import { PublicAccount } from "../account/interface/account.interface.ts";
 
 
 
@@ -19,7 +20,7 @@ export class TeacherController {
         try {
             const teacherDto: ICreateTeacherDto = req.body;
             const teacher = await this.service.createTeacher(teacherDto);
-            const apiResponse = new ApiResponse<Partial<Teacher>>(teacher, 201, true, 'The teacher has been created');
+            const apiResponse = new ApiResponse<PublicAccount>(teacher, 201, true, 'The teacher has been created');
             res.status(201).json(apiResponse);
         } catch (error) {
             next(error)
@@ -49,6 +50,20 @@ export class TeacherController {
         }
     }
     
+
+    public async findTeacherByAccountId(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { accountId } = req.params;
+            const teacher = await this.service.findTeacherByAccountId(Number(accountId));
+            const apiResponse = new ApiResponse<Teacher>(teacher, 200, true);
+            res.status(200).json(apiResponse);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+     
+
 
     public async deleteTeacher(req: Request, res: Response, next: NextFunction) {
         try {
@@ -89,8 +104,8 @@ export class TeacherSubjectController {
         try {
             const { teacherId } = req.params;
             const subjects: string[] = req.body.subjects
-            const assignmentResult = await this.service.assignSubjectToTeacher(Number(teacherId), subjects);
-            const apiResponse = new ApiResponse(assignmentResult, 201, true, 'The subjects has been assigned to the teacher')
+            const updatedSubjects = await this.service.assignSubjectToTeacher(Number(teacherId), subjects);
+            const apiResponse = new ApiResponse(updatedSubjects, 201, true, 'The subjects has been assigned to the teacher')
             res.status(201).json(apiResponse);
         } catch (error) {
             next(error)
@@ -101,8 +116,8 @@ export class TeacherSubjectController {
         try {
             const { teacherId } = req.params;
             const subjects: string[] = req.body.subjects;
-            const reassignmentResult = await this.service.removeSubjectFromTeacher(Number(teacherId), subjects);
-            const apiResponse = new ApiResponse(reassignmentResult, 200, true);
+            const updatedSubjects = await this.service.removeSubjectFromTeacher(Number(teacherId), subjects);
+            const apiResponse = new ApiResponse(updatedSubjects, 200, true);
             res.status(200).json(apiResponse);
         } catch (error) {
             next(error)

@@ -1,6 +1,6 @@
 import { PupilModel, PupilSubjectModel } from "../../../prisma/prisma.provider.ts";
 import {Prisma} from "@prisma/client";
-import type { Pupil, PupilOnSubject } from "../interface/pupil.interface.ts";
+import type { Pupil, PupilOnSubject, SubjectGrade } from "../interface/pupil.interface.ts";
 import type { Subject } from "../../subject/interface/subject.interface.ts";
 
 
@@ -15,10 +15,10 @@ export interface IPupilRepository {
 
 
 export interface IPupilSubjectRepository {
-    getPupilSubjects(pupilId: number): Promise<Partial<PupilOnSubject>[]>;
-    assignSubjectsToPupil(pupilId: number, subjects: Subject[]): Promise<Partial<PupilOnSubject>[]>;
-    setSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<Partial<PupilOnSubject>>;
-    removeSubjectFromPupil(pupilId: number, subjectId: number): Promise<Partial<PupilOnSubject>[]>;
+    getPupilSubjects(pupilId: number): Promise<SubjectGrade[]>
+    assignSubjectsToPupil(pupilId: number, subjects: Subject[]): Promise<Subject[]>
+    setSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<SubjectGrade>
+    removeSubjectFromPupil(pupilId: number, subjectId: number): Promise<Subject[]>
 }
 
 
@@ -124,8 +124,8 @@ export class PrismaPupilSubjectRepository implements IPupilSubjectRepository {
         this.pupilSubjectModel = new PupilSubjectModel().getModel();
     }
 
-    public async getPupilSubjects(pupilId: number): Promise<Partial<PupilOnSubject>[]> {
-        const pupilSubjects: Partial<PupilOnSubject>[] = await this.pupilSubjectModel.findMany({
+    public async getPupilSubjects(pupilId: number): Promise<SubjectGrade[]> {
+        const pupilSubjects: SubjectGrade[] = await this.pupilSubjectModel.findMany({
             where: {
                 pupilId,
             },
@@ -134,10 +134,10 @@ export class PrismaPupilSubjectRepository implements IPupilSubjectRepository {
                 subject: true,
             }
         });
-        return pupilSubjects;
+        return pupilSubjects
     }
 
-    public async assignSubjectsToPupil(pupilId: number, subjects: Subject[]): Promise<Partial<PupilOnSubject>[]> {
+    public async assignSubjectsToPupil(pupilId: number, subjects: Subject[]): Promise<Subject[]> {
         await this.pupilSubjectModel.createMany({
             skipDuplicates: true,
             data: subjects.map((subject: Subject) => ({
@@ -153,11 +153,14 @@ export class PrismaPupilSubjectRepository implements IPupilSubjectRepository {
                 grade: true,
                 subject: true,
             }
+        }); 
+        return updatedPupilSubjects.map((p_on_sub) => {
+            return p_on_sub.subject
         });
-        return updatedPupilSubjects;
     }
 
-    public async setSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<Partial<PupilOnSubject>> {
+
+    public async setSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<SubjectGrade> {
         const targetSubject = await this.pupilSubjectModel.findFirst({
             where: {
                 pupilId,
@@ -168,7 +171,7 @@ export class PrismaPupilSubjectRepository implements IPupilSubjectRepository {
             }
         });
 
-        const updatedSubject: Partial<PupilOnSubject> = await this.pupilSubjectModel.update({
+        const updatedSubject = await this.pupilSubjectModel.update({
             where: {
                 pupilId,
                 subjectId,
@@ -185,8 +188,10 @@ export class PrismaPupilSubjectRepository implements IPupilSubjectRepository {
         return updatedSubject;
     }
 
-    public async removeSubjectFromPupil(pupilId: number, subjectId: number): Promise<Partial<PupilOnSubject>[]> {
-        const pupilSubjectId = await this.pupilSubjectModel.findFirst({
+
+
+    public async removeSubjectFromPupil(pupilId: number, subjectId: number): Promise<Subject[]> {
+        await this.pupilSubjectModel.findFirst({
             where: {
                 pupilId,
                 subjectId,
@@ -196,6 +201,18 @@ export class PrismaPupilSubjectRepository implements IPupilSubjectRepository {
             }
         });
 
-        return await this.getPupilSubjects(pupilId);;
+
+        const pupilOnSubject = await this.pupilSubjectModel.findMany({
+            where: {
+                pupilId,
+                subjectId,
+            },
+            select: {
+                subject: true,
+            }
+        })
+        return pupilOnSubject.map((p_on_sub) => {
+           return p_on_sub.subject
+        })
     }
 }

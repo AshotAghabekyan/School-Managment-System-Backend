@@ -14,6 +14,13 @@ export interface Pupil {
 }
 
 
+
+export interface SubjectGrade {
+    subject: Subject;
+    grade: number
+} 
+
+
 export interface PupilOnSubject {
     id: number;
     pupilId: number;
@@ -21,6 +28,5 @@ export interface PupilOnSubject {
     grade: number;
     subject: Subject
     pupil: Pupil
-    
 }
 

@@ -22,7 +22,7 @@ export class TeacherService {
         this.accountService = new AccountService();
     }
 
-    public async createTeacher(teacherDto: ICreateTeacherDto): Promise<Partial<Teacher> > {
+    public async createTeacher(teacherDto: ICreateTeacherDto): Promise<PublicAccount> {
         const isAccountExist: PublicAccount = await this.accountService.findAccountById(teacherDto.accountId);
         if (!isAccountExist) {
             throw new NotFoundException("Associated account not found");
@@ -45,6 +45,15 @@ export class TeacherService {
 
     public async findTeacherById(teacherId: number): Promise<Teacher> {
         const targetTeacher: Teacher = await this.repository.findTeacherById(teacherId);
+        if (!targetTeacher) {
+            throw new NotFoundException("Teacher not found");
+        }
+        return targetTeacher;
+    }
+
+
+    public async findTeacherByAccountId(accountId: number): Promise<Teacher> {
+        const targetTeacher: Teacher = await this.repository.findTeacherByAccountId(accountId);
         if (!targetTeacher) {
             throw new NotFoundException("Teacher not found");
         }
@@ -88,7 +97,7 @@ export class TeacherSubjectService {
             return !subjectsOfTeacher.some(teacherSubject => teacherSubject.subjectId === newSubject.subjectId);
         });
         
-        const updatedTeacher: Partial<TeacherOnSubject>[] = await this.repository.assignSubjectToTeacher(teacherId, uniqueSubjects);
+        const updatedTeacher: Subject[] = await this.repository.assignSubjectToTeacher(teacherId, uniqueSubjects);
         if (!updatedTeacher) {
             throw new BadRequestException("Failed to update teacher");
         }
@@ -97,7 +106,7 @@ export class TeacherSubjectService {
     }
 
 
-    public async removeSubjectFromTeacher(teacherId: number, subjects: string[]) {
+    public async removeSubjectFromTeacher(teacherId: number, subjects: string[]): Promise<Subject[]> {
         return this.repository.removeSubjectFromTeacher(teacherId, subjects);
     }
 }

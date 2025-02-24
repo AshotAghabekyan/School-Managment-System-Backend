@@ -19,6 +19,9 @@ router.get("/:teacherId", (req: Request, res: Response, next: NextFunction) =>
     controller.findTeacherById(req, res, next)
 );
 
+router.get("/pubAccount/:accountId", (req: Request, res: Response, next: NextFunction) => 
+    controller.findTeacherByAccountId(req, res, next))
+
 router.post("/", (req: Request, res: Response, next: NextFunction) => 
     controller.createTeacher(req, res, next)
 );
@@ -29,7 +32,6 @@ router.delete("/:teacherId", (req: Request, res: Response, next: NextFunction) =
 
 
 
-// Teacher Subject Endpoints
 router.get("/:teacherId/subjects/", (req: Request, res: Response, next: NextFunction) => 
     subController.getTeacherSubjectsList(req, res, next)
 );

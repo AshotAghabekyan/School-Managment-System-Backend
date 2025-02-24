@@ -108,4 +108,18 @@ export class AccountController {
             next(error);
         }
     }
+
+
+
+    public async getAccountByToken(req: Request, res: Response, next: NextFunction) {
+        try {
+            const reqUser: JwtPayload = req['user'];
+            const targetUser: PublicAccount = await this.service.findAccountById(reqUser.accountId);
+            const apiResponse = new ApiResponse(targetUser, 200, true);
+            res.status(200).json(apiResponse);
+        }
+        catch(error) {
+            next(error);
+        }
+    }
 }
