@@ -4,6 +4,6 @@ export type SubjectType = "Math" | "History" | "Geography" | "English" | "Comput
 
 
 export interface Subject {
-    title: string;
+    title: SubjectType;
     subjectId: number;
 }

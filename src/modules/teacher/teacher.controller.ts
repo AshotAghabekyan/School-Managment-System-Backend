@@ -2,8 +2,8 @@ import type { NextFunction, Request, Response } from "express";
 import { TeacherService, TeacherSubjectService } from "./teacher.service.ts";
 import type { ICreateTeacherDto } from "./dto/teacher.dto.ts";
 import { ApiResponse } from "../global/types/api/api.types.ts";
-import { Teacher } from "./interface/teacher.interface.ts";
-import { Subject } from "../subject/interface/subject.interface.ts";
+import type { Teacher } from "./interface/teacher.interface.ts";
+import type { Subject } from "../subject/interface/subject.interface.ts";
 
 
 
