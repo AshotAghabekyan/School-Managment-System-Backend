@@ -2,7 +2,7 @@ import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
 import { AccountService } from "../account/account.service.ts";
 import type { PublicAccount } from "../account/interface/account.interface.ts";
-import type { Pupil, PupilOnSubject, SubjectGrade } from "./interface/pupil.interface.ts";
+import type { Pupil, SubjectGrade } from "./interface/pupil.interface.ts";
 import type { ICreatePupilDto } from "./dto/pupil.dto.ts";
 import type { Subject, SubjectType } from "../subject/interface/subject.interface.ts";
 import { PrismaPupilRepository, PrismaPupilSubjectRepository, type IPupilRepository, type IPupilSubjectRepository } from "./repository/pupil.repository.ts";

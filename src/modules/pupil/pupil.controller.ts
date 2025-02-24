@@ -4,7 +4,7 @@ import { PupilService, PupilSubjectService } from "./pupil.service.ts";
 import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import type { SubjectType } from "../subject/interface/subject.interface.ts";
 import { ApiResponse } from "../global/types/api/api.types.ts";
-import { SubjectGrade } from "./interface/pupil.interface.ts";
+import type { SubjectGrade } from "./interface/pupil.interface.ts";
 
 
 export class PupilController {
