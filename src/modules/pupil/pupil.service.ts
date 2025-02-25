@@ -2,12 +2,11 @@ import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import { NotFoundException } from "../../exception/not-found.exception.ts";
 import { AccountService } from "../account/account.service.ts";
 import type { PublicAccount } from "../account/interface/account.interface.ts";
-import type { Pupil, SubjectGrade } from "./interface/pupil.interface.ts";
+import type { Pupil, PupilOnSubject } from "./interface/pupil.interface.ts";
 import type { ICreatePupilDto } from "./dto/pupil.dto.ts";
 import type { Subject, SubjectType } from "../subject/interface/subject.interface.ts";
 import { PrismaPupilRepository, PrismaPupilSubjectRepository, type IPupilRepository, type IPupilSubjectRepository } from "./repository/pupil.repository.ts";
 import { SubjectService } from "../subject/subject.service.ts";
-
 
 
 export class PupilService {
@@ -97,14 +96,14 @@ export class PupilSubjectService {
         const subjectsToAdd = await subjectService.bulkFindSubjectsByTitle(subjectTitles);
         const pupilCurrSubjects = await this.getPupilSubjects(pupilId);
         const uniqueSubjects = subjectsToAdd.filter((subjectsToAdd: Subject) => {
-            const isDublicate = pupilCurrSubjects.some((pupilSubject) => subjectsToAdd.subjectId == pupilSubject.subject.subjectId)
+            const isDublicate = pupilCurrSubjects.some((pupilSubject) => subjectsToAdd.subjectId == pupilSubject.subjectDetails.subjectId)
             return !isDublicate;
         })
         return await this.pupilSubjectRepository.assignSubjectsToPupil(pupilId, uniqueSubjects);
     }
 
 
-    public async updateSubjectGrade(pupilId: number, subjectId: number, grade: number): Promise<SubjectGrade> {
+    public async updatePupilGrade(pupilId: number, subjectId: number, grade: number): Promise<PupilOnSubject> {
         if (!pupilId || !subjectId || grade === undefined) {
             throw new BadRequestException("Pupil ID, Subject ID, and grade are required");
         }
@@ -118,7 +117,7 @@ export class PupilSubjectService {
     }
     
 
-    public async getPupilSubjects(pupilId: number): Promise<SubjectGrade[]> {
+    public async getPupilSubjects(pupilId: number): Promise<PupilOnSubject[]> {
         if (!pupilId) {
             throw new BadRequestException("Pupil ID is required");
         }

@@ -1,8 +1,8 @@
 import { Prisma } from "@prisma/client";
 import type { Subject } from "../../subject/interface/subject.interface.ts";
-import type {Teacher, TeacherOnSubject } from "../interface/teacher.interface.ts";
+import type {Teacher } from "../interface/teacher.interface.ts";
 import type { ICreateTeacherDto } from "../dto/teacher.dto.ts";
-import { TeacherModel, TeacherSubjectModel } from "../../../prisma/prisma.provider.ts";
+import { TeacherModel } from "../../../prisma/prisma.provider.ts";
 
 
 export interface ITeacherRepository {
@@ -60,9 +60,7 @@ export class PrismaTeacherRepository implements ITeacherRepository {
                 account: {
                     omit: {password: true, createdAt: true}
                 },
-                teacherSubjects: {
-                    select: {subject: true},
-                }
+                subjects: true
             },
         });
         return allTeachers;
@@ -73,11 +71,7 @@ export class PrismaTeacherRepository implements ITeacherRepository {
         const targetTeacher: Teacher = await this.teacherModel.findFirst({
             where: {teacherId},
             include: {
-                teacherSubjects: {
-                    select: {
-                        subject: true
-                    }
-                },
+                subjects: true,
                 account: {
                     omit: {password: true, createdAt: true}
                 }   
@@ -96,11 +90,7 @@ export class PrismaTeacherRepository implements ITeacherRepository {
                 }
             },
             include: {
-                teacherSubjects: {
-                    select: {
-                        subject: true
-                    }
-                },
+                subjects: true,
                 account: {
                     omit: {password: true, createdAt: true}
                 }   
@@ -120,11 +110,7 @@ export class PrismaTeacherRepository implements ITeacherRepository {
                 account: {
                     omit: {password: true, createdAt: true}
                 },
-                teacherSubjects: {
-                    select: {
-                        subject: true
-                    }
-                },
+                subjects: true
             }
 
         });
@@ -142,61 +128,83 @@ export class PrismaTeacherRepository implements ITeacherRepository {
 
 
 export class PrismaTeacherSubjectRepository implements ITeacherSubjectRepository{
-    private teacherSubjectModel: Prisma.TeacherOnSubjectDelegate;
+    private teacherModel: Prisma.TeacherDelegate;
     constructor() {
-        this.teacherSubjectModel = new TeacherSubjectModel().getModel();
+        this.teacherModel = new TeacherModel().getModel();
     }    
 
 
     public async assignSubjectToTeacher(teacherId: number, subjects: Subject[]) {
-        await this.teacherSubjectModel.createMany({
-            skipDuplicates: true,
-            data: subjects.map((subject: Subject) => {
-                return {
-                    subjectId: subject.subjectId,
-                    teacherId
-                }
-            }),
-        });
-
-        const teacherOnSubjects: Partial<TeacherOnSubject>[] = await this.teacherSubjectModel.findMany({
-            where: {teacher: {teacherId}},
-            select: {
-                subject: true,
+        await this.teacherModel.update({
+            where: {
+                teacherId,
             },
+            data: {
+                subjects: {
+                    connect: subjects.map((subject) => {
+                        return {
+                            subjectId: subject.subjectId
+                        }
+                    })
+                }
+            }
         })
-        return teacherOnSubjects.map((t_on_sub: TeacherOnSubject) => {
-            return t_on_sub.subject;
+
+        const teacherOnSubjects = await this.teacherModel.findFirst({
+            where: {teacherId},
+            select: {
+                subjects: true
+            }
         })
+        return teacherOnSubjects.subjects
     }
 
 
     public async removeSubjectFromTeacher(teacherId: number, subjectsTitle: string[]): Promise<Subject[]> {
-        await this.teacherSubjectModel.deleteMany({
-            where: {
-                subject: {title: {in: subjectsTitle}}
+        const subjects = await this.teacherModel.findFirst({
+            where: { teacherId },
+            select: {
+                subjects: {
+                    where: {
+                        title: { in: subjectsTitle }
+                    },
+                    select: { subjectId: true }
+                }
             }
-        })
-
-        const teacherOnSubjects = await this.teacherSubjectModel.findMany({
-            where: {teacher: {teacherId}},
-            select: {subject: true},
-        })
-        return teacherOnSubjects.map((t_on_sub: TeacherOnSubject) => {
-            return t_on_sub.subject;
-        })
+        });
+    
+        if (!subjects || subjects.subjects.length === 0) {
+            return [];
+        }
+    
+        await this.teacherModel.update({
+            where: { teacherId },
+            data: {
+                subjects: {
+                    disconnect: subjects.subjects.map(subject => ({ subjectId: subject.subjectId }))
+                }
+            }
+        });
+    
+        const updatedSubjects = await this.teacherModel.findFirst({
+            where: { teacherId },
+            select: { subjects: true }
+        });
+    
+        return updatedSubjects.subjects;
     }
+    
 
 
     public async findSubjectsByTeacherId(teacherId: number): Promise<Subject[]> {
-        const teacherOnSubjects = await this.teacherSubjectModel.findMany({
+        const teacherOnSubjects = await this.teacherModel.findFirst({
             where: {
                 teacherId
             },
             select: {
-                subject: true
+                subjects: true
             }
         })
-        return teacherOnSubjects.map((currSubject) => currSubject.subject)
+        return teacherOnSubjects.subjects
     }
 }

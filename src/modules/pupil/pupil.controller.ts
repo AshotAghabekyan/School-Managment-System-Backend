@@ -4,7 +4,7 @@ import { PupilService, PupilSubjectService } from "./pupil.service.ts";
 import { BadRequestException } from "../../exception/bad-request.exception.ts";
 import type { SubjectType } from "../subject/interface/subject.interface.ts";
 import { ApiResponse } from "../global/types/api/api.types.ts";
-import type { SubjectGrade } from "./interface/pupil.interface.ts";
+import type { PupilOnSubject } from "./interface/pupil.interface.ts";
 
 
 export class PupilController {
@@ -112,13 +112,28 @@ export class PupilSubjectController {
         }
     }
 
-    public async updateSubjectGrade(req: Request, res: Response, next: NextFunction) {
+
+    public async removeSubjectFromPupil(req: Request, res: Response, next: NextFunction) {
+        try {
+            const pupilId: number = +req.params.pupilId;
+            const subjectId: number = +req.params.subjectId;
+
+            const pupilSubjects = await this.pupilSubjectService.removeSubjectFromPupil(pupilId, subjectId);
+            const apiResponse = new ApiResponse(pupilSubjects, 200, true);
+            res.status(200).json(apiResponse);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+    public async updatePupilGrade(req: Request, res: Response, next: NextFunction) {
         try {
             const pupilId: number = +req.params.pupilId;
             const subjectId: number = +req.params.subjectId;
             const grade: number = +req.body.grade;
 
-            const updatedSubject: SubjectGrade = await this.pupilSubjectService.updateSubjectGrade(pupilId, subjectId, grade);
+            const updatedSubject: PupilOnSubject = await this.pupilSubjectService.updatePupilGrade(pupilId, subjectId, grade);
             const apiResponse = new ApiResponse(updatedSubject, 200, true);
             res.status(200).json(apiResponse);
         } catch (error) {
@@ -138,16 +153,5 @@ export class PupilSubjectController {
         }
     }
 
-    public async removeSubjectFromPupil(req: Request, res: Response, next: NextFunction) {
-        try {
-            const pupilId: number = +req.params.pupilId;
-            const subjectId: number = +req.params.subjectId;
 
-            const pupilSubjects = await this.pupilSubjectService.removeSubjectFromPupil(pupilId, subjectId);
-            const apiResponse = new ApiResponse(pupilSubjects, 200, true);
-            res.status(200).json(apiResponse);
-        } catch (error) {
-            next(error);
-        }
-    }
 }

@@ -30,7 +30,7 @@ router.get('/:pupilId/subjects', (req: Request, res: Response, next: NextFunctio
     subController.getPupilSubjects(req, res, next))
 
 router.put("/:pupilId/subjects/:subjectId/grade", (req: Request, res: Response, next: NextFunction) => 
-    subController.updateSubjectGrade(req, res, next))
+    subController.updatePupilGrade(req, res, next))
 
 router.post('/:pupilId/subjects', (req: Request, res: Response, next: NextFunction) => 
     subController.assignSubjectsToPupil(req, res, next))

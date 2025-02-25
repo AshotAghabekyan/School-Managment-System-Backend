@@ -1,6 +1,6 @@
 import type { PublicAccount } from "../account/interface/account.interface.ts";
 import type { Subject } from "../subject/interface/subject.interface.ts";
-import type { Teacher, TeacherOnSubject } from "./interface/teacher.interface.ts";
+import type { Teacher } from "./interface/teacher.interface.ts";
 import type { ICreateTeacherDto } from "./dto/teacher.dto.ts";
 import type { ITeacherRepository, ITeacherSubjectRepository } from "./repository/teacher.repository.ts";
 import { PrismaTeacherRepository, PrismaTeacherSubjectRepository } from "./repository/teacher.repository.ts";

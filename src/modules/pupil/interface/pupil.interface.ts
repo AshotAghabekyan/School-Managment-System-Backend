@@ -8,25 +8,14 @@ export interface Pupil {
     pupilId: number;
     accountId: number;
     account: PublicAccount,
-    pupilSubjects: {
-        subject: Subject
-    }[]
+    subjects: PupilSubject[]
 }
 
 
 
-export interface SubjectGrade {
-    subject: Subject;
-    grade: number
-} 
 
-
-export interface PupilOnSubject {
-    id: number;
-    pupilId: number;
-    accountId: number;
+export interface PupilSubject {
     grade: number;
-    subject: Subject
-    pupil: Pupil
+    subject: Subject;
 }
 
