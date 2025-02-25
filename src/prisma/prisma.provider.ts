@@ -68,19 +68,6 @@ export class SubjectModel extends PrismaProvider implements PrismaModelProvider 
 
 
 
-export class TeacherSubjectModel extends PrismaProvider implements PrismaModelProvider {
-    constructor() {
-        super();
-    }
-
-    getModel(): Prisma.TeacherOnSubjectDelegate<DefaultArgs, Prisma.PrismaClientOptions> {
-        const client = this.getPrismaClient();
-        return client.teacherOnSubject;
-    }
-}
-
-
-
 
 export class PupilModel extends PrismaProvider implements PrismaModelProvider {
     constructor() {
@@ -101,9 +88,9 @@ export class PupilSubjectModel extends PrismaProvider implements PrismaModelProv
         super();
     }
 
-    getModel(): Prisma.PupilOnSubjectDelegate<DefaultArgs, Prisma.PrismaClientOptions> {
+    getModel(): Prisma.PupilSubjectDelegate<DefaultArgs, Prisma.PrismaClientOptions> {
         const client = this.getPrismaClient()
-        return client.pupilOnSubject;
+        return client.pupilSubject;
     }
 }
 
