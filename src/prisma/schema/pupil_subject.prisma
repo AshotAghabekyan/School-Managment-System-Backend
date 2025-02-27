@@ -3,11 +3,10 @@
 
 
 model PupilSubject {
-    @@map("_PupilToSubject")
     id Int @id @default(autoincrement())
     pupilId Int @map("pupil_id")
     subjectId Int  @map("subject_id")
     grade Float?
-    pupil Pupil? @relation(name: "_PupilToSubject", fields: [pupilId], references: [pupilId])
-    subject Subject? @relation(name: "_PupilToSubject", fields: [subjectId], references: [subjectId])
+    pupil Pupil? @relation(name: "PupilToSubject", fields: [pupilId], references: [pupilId])
+    subject Subject? @relation(name: "PupilToSubject", fields: [subjectId], references: [subjectId])
 }

@@ -5,5 +5,5 @@ model Pupil {
     pupilId  Int  @id @default(autoincrement()) @map("pupil_id")
     accountId Int @unique @map("account_id")
     account Account @relation(fields: [accountId], references: [accountId])
-    subjects PupilSubject[] @relation(name: "_PupilToSubject")
+    subjects PupilSubject[] @relation(name: "PupilToSubject")
 }

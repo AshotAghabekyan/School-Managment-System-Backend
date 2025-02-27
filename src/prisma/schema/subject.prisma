@@ -6,5 +6,5 @@ model Subject {
     title String @unique
     
     teachers Teacher[] @relation("TeacherToSubject")
-    subjects PupilSubject[] @relation(name: "_PupilToSubject")
+    subjects PupilSubject[] @relation(name: "PupilToSubject")
 }
