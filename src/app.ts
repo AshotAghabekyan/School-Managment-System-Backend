@@ -37,5 +37,4 @@ app.use('/pupils', pupilRouter);
 
 
 app.use(errorHandler);
-
 app.listen(httpConfig.port, () => console.log('server running'));

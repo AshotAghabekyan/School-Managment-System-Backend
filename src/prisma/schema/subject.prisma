@@ -5,6 +5,6 @@ model Subject {
     subjectId Int  @id @default(autoincrement()) @map("subject_id")
     title String @unique
     
-    teachers Teacher[] @relation("_TeacherToSubject")
+    teachers Teacher[] @relation("TeacherToSubject")
     subjects PupilSubject[] @relation(name: "_PupilToSubject")
 }

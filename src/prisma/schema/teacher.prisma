@@ -5,5 +5,5 @@ model Teacher {
     teacherId Int  @id @default(autoincrement()) @map("teacher_id")
     accountId Int @unique @map("account_id")
     account Account @relation(fields: [accountId], references: [accountId])
-    subjects Subject[] @relation("_TeacherToSubject")
+    subjects Subject[] @relation("TeacherToSubject")
 }

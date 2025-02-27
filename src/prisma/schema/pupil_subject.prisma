@@ -3,6 +3,7 @@
 
 
 model PupilSubject {
+    @@map("_PupilToSubject")
     id Int @id @default(autoincrement())
     pupilId Int @map("pupil_id")
     subjectId Int  @map("subject_id")

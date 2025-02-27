@@ -81,7 +81,7 @@
 
 
    ### SUBJECT  
-        enum SubjectType = "Math" | "History" | "Geography" | "English" | "Computer Science" | "Art" | string
+        enum SubjectType = "Math" | "History" | "Geography" | "English" | "Computer Science" | "Art";
 
         model Subject {
             title: SubjectType;
@@ -98,18 +98,8 @@
         model Teacher {
             teacherId: number;
             accountId: number;
-            teacherSubjects: {
-                subject: Subject
-            }[],
+            subjects: Subject[];
             account: PublicAccount
-        }
-
-        model TeacherOnSubject {
-            id: number;
-            teacherId: number;
-            subjectId: number;
-            subject: Subject;
-            teacher: Teacher | Partial<Teacher>;
         }
 
         model ICreateTeacherDto {
@@ -129,18 +119,12 @@
             pupilId: number;
             accountId: number;
             account: PublicAccount,
-            pupilSubjects: {
-                subject: Subject
-            }[]
+            subjects: PupilSubject[] 
         }
 
-        model PupilOnSubject {
-            id: number;
-            pupilId: number;
-            accountId: number;
+        model PupilSubject {
             grade: number;
             subject: Subject
-            pupil: Pupil 
         }
 
         model ICreatePupilDto {
@@ -524,7 +508,7 @@
 
         Response {
             status:200
-            body: ApiResponse<SubjectGrade[]>
+            body: ApiResponse<PupilSubject[]>
         }
 
 
@@ -557,7 +541,7 @@
 
         Response {
             status:200
-            body: ApiResponse<SubjectGrade[]>
+            body: ApiResponse<PupilSubject[]>
         }
 
 
