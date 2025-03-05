@@ -12,15 +12,15 @@ import configJwt from '../../configuration/config.jwt.ts';
 
 
 export class AuthService {
-    private jwtSecret: string = configJwt.jwtSecret
-    private accountService: AccountService
+    private jwtSecret: string = configJwt.jwtSecret;
+    private accountService: AccountService;
   
     constructor() {
         this.accountService = new AccountService();
     }
 
     public generateToken(payload: { accountId: number; email: string }): JwtToken {
-        const token: string = jwt.sign(payload, this.jwtSecret, {"expiresIn": "1d"});
+        const token: string = jwt.sign(payload, this.jwtSecret, {expiresIn: "1d"});
         return {token};
     }
 
